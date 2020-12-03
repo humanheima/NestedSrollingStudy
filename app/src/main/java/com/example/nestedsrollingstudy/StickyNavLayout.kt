@@ -52,7 +52,7 @@ class StickyNavLayout @JvmOverloads constructor(
          */
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        Log.d(
+        Log.i(
             TAG,
             "onMeasure1: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mNestedChild.measuredHeight = ${mNestedChild.measuredHeight}"
         )
@@ -68,7 +68,7 @@ class StickyNavLayout @JvmOverloads constructor(
          * 子控件mNestedChild的高度发生了变化，重新测量一遍，最终的结果是该控件本身高度没有发生变化，但是子控件mNestedChild的变高了
          */
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        Log.d(
+        Log.i(
             TAG,
             "onMeasure2: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mNestedChild.measuredHeight = ${mNestedChild.measuredHeight}"
         )
@@ -77,17 +77,17 @@ class StickyNavLayout @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         mTopViewHeight = mTop.measuredHeight
-        Log.d(TAG, "onSizeChanged: mTopViewHeight =$mTopViewHeight")
+        Log.i(TAG, "onSizeChanged: mTopViewHeight =$mTopViewHeight")
     }
 
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
-        Log.d(TAG, "onStartNestedScroll: nestedScrollAxes = $nestedScrollAxes")
+        Log.i(TAG, "onStartNestedScroll: nestedScrollAxes = $nestedScrollAxes")
         return (nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL) != 0
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int) {
         mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, axes)
-        Log.d(TAG, "onNestedScrollAccepted: ")
+        Log.i(TAG, "onNestedScrollAccepted: ")
     }
 
 
@@ -97,7 +97,7 @@ class StickyNavLayout @JvmOverloads constructor(
 
     override fun onStopNestedScroll(child: View) {
         mNestedScrollingParentHelper.onStopNestedScroll(child)
-        Log.d(TAG, "onStopNestedScroll: ")
+        Log.i(TAG, "onStopNestedScroll: ")
     }
 
     override fun onNestedScroll(
@@ -107,11 +107,11 @@ class StickyNavLayout @JvmOverloads constructor(
         dxUnconsumed: Int,
         dyUnconsumed: Int
     ) {
-        Log.d(TAG, "onNestedScroll: ")
+        Log.i(TAG, "onNestedScroll: ")
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
-        Log.d(TAG, "onNestedPreScroll:  dx=$dx , dy=$dy")
+        Log.i(TAG, "onNestedPreScroll:  dx=$dx , dy=$dy")
 
         /**
          * scrollY>=0，向上滑动的时候，scrollY增加。
@@ -130,7 +130,7 @@ class StickyNavLayout @JvmOverloads constructor(
 
     override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
 
-        Log.d(
+        Log.i(
             TAG,
             "onNestedPreFling velocityY = $velocityY  scrollY = $scrollY  mTop.height = ${mTop.height}"
         )
@@ -151,7 +151,7 @@ class StickyNavLayout @JvmOverloads constructor(
 
                 val firstChild = target.getChildAt(0)
                 val childAdapterPosition = target.getChildAdapterPosition(firstChild)
-                Log.d(TAG, "onNestedPreFling: childAdapterPosition = $childAdapterPosition")
+                Log.i(TAG, "onNestedPreFling: childAdapterPosition = $childAdapterPosition")
                 /**
                  * 向下滑动的时候，如果RecyclerView中第一个可见item的位置在adapter中的位置等于0，
                  * 则认为RecyclerView自己消费了fling事件，否则认为RecyclerView没有消费
@@ -175,16 +175,6 @@ class StickyNavLayout @JvmOverloads constructor(
         consumed: Boolean
     ): Boolean {
         return false
-    }
-
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        Log.d(TAG, "onLayout: ")
-        super.onLayout(changed, l, t, r, b)
-    }
-
-    override fun onDraw(canvas: Canvas?) {
-        Log.d(TAG, "onDraw: ")
-        super.onDraw(canvas)
     }
 
     private fun fling(velocityY: Int) {
@@ -211,7 +201,7 @@ class StickyNavLayout @JvmOverloads constructor(
     override fun computeScroll() {
         if (mScroller.computeScrollOffset()) {
             val y = mScroller.currY
-            Log.d(TAG, "computeScroll: mScroller.currY = $y")
+            Log.i(TAG, "computeScroll: mScroller.currY = $y")
             scrollTo(0, y)
             invalidate()
         }

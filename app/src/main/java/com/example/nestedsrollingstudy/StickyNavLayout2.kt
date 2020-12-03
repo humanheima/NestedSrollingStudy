@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.view.NestedScrollingChild2
 import androidx.core.view.NestedScrollingParent2
 import androidx.core.view.NestedScrollingParentHelper
 import androidx.core.view.ViewCompat
@@ -47,23 +46,23 @@ class StickyNavLayout2 @JvmOverloads constructor(
 
         Log.e(
             TAG,
-            "onMeasure1: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mViewPager.measuredHeight = ${mNestedChild.measuredHeight}"
+            "onMeasure1: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mNestedChild.measuredHeight = ${mNestedChild.measuredHeight}"
         )
 
         /**
-         * 这里为什么要将 mViewPager高度设置为mViewPager原本的高度加上mNav的高度呢？因为mTop滑出去以后，mNav和mViewpager应该占据
+         * 这里为什么要将 mNestedChild高度设置为mNestedChild原本的高度加上mNav的高度呢？因为mTop滑出去以后，mNav和mNestedChild应该占据
          * StickyNavLayout的整个高度，不然StickyNavLayout底部会有空白。
          */
         val params = mNestedChild.layoutParams
         params?.height = measuredHeight - (mNav?.measuredHeight ?: 0)
 
         /**
-         * 子控件mViewPager的高度发生了变化，重新测量一遍，最终的结果是该控件本身高度没有发生变化，但是子控件mViewPager的变高了
+         * 子控件mNestedChild的高度发生了变化，重新测量一遍，最终的结果是该控件本身高度没有发生变化，但是子控件mNestedChild的变高了
          */
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         Log.e(
             TAG,
-            "onMeasure2: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mViewPager.measuredHeight = ${mNestedChild.measuredHeight}"
+            "onMeasure2: measuredHeight = $measuredHeight , mNav.measuredHeight = ${mNav?.measuredHeight} , mNestedChild.measuredHeight = ${mNestedChild.measuredHeight}"
         )
     }
 
@@ -87,12 +86,21 @@ class StickyNavLayout2 @JvmOverloads constructor(
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
-        Log.e(TAG, "ViewGroup onNestedPreScroll:  dx=$dx , dy=$dy")
         // 向上滑动（手指从下向上滑）, dy>0
         val hiddenTop = dy > 0 && scrollY < mTopViewHeight
 
+
         // dy<0 向下滑动（手指从上向下滑）
-        val showTop = dy < 0 && scrollY >= 0 && !target.canScrollVertically(-1)
+        val canScrollVertically = target.canScrollVertically(-1)
+
+        Log.e(
+            TAG,
+            "ViewGroup onNestedPreScroll: dy= $dy canScrollVertically = $canScrollVertically "
+        )
+
+        val showTop = dy < 0 && scrollY >= 0 && !canScrollVertically
+
+
         if (hiddenTop || showTop) {
             //滑动y距离
             scrollBy(0, dy)
@@ -154,12 +162,19 @@ class StickyNavLayout2 @JvmOverloads constructor(
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-        Log.e(TAG, "NestedScrollingParent2 onNestedPreScroll:  dx=$dx , dy=$dy")
         // 向上滑动（手指从下向上滑）, dy>0
         val hiddenTop = dy > 0 && scrollY < mTopViewHeight
 
         // dy<0 向下滑动（手指从上向下滑）
-        val showTop = dy < 0 && scrollY >= 0 && !target.canScrollVertically(-1)
+
+        val canScrollVertically = target.canScrollVertically(-1)
+
+        Log.e(
+            TAG,
+            "NestedScrollingParent2 onNestedPreScroll: dy= $dy canScrollVertically = $canScrollVertically"
+        )
+
+        val showTop = dy < 0 && scrollY >= 0 && !canScrollVertically
         if (hiddenTop || showTop) {
             //滑动y距离
             scrollBy(0, dy)
